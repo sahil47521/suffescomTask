@@ -3,25 +3,27 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform } from '
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { COLORS, SIZES, SHADOWS, moderateScale, verticalScale } from '../constants/theme';
-import { ChevronLeft, Mail, Phone, MapPin, User as UserIcon } from 'lucide-react-native';
+import Icon from 'react-native-vector-icons/Feather';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'UserDetail'>;
 
 const UserDetailScreen: React.FC<Props> = ({ route, navigation }) => {
+    const insets = useSafeAreaInsets()
     const { user } = route.params;
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+        <ScrollView style={[styles.container, { paddingTop: insets.top }]} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn} activeOpacity={0.7}>
-                    <ChevronLeft size={moderateScale(24)} color={COLORS.lightText} style={styles.icon} />
+                    <Icon name="chevron-left" size={moderateScale(24)} color={COLORS.lightText} style={styles.icon} />
                     <Text style={styles.backBtnText}> Back</Text>
                 </TouchableOpacity>
             </View>
 
             <View style={styles.profileSection}>
                 <View style={styles.avatar}>
-                    <UserIcon size={moderateScale(48)} color={COLORS.white} />
+                    <Icon name="user" size={moderateScale(48)} color={COLORS.white} />
                 </View>
                 <Text style={styles.name}>{user.name}</Text>
                 <Text style={styles.username}>@{user.username || 'user_handle'}</Text>
@@ -30,7 +32,7 @@ const UserDetailScreen: React.FC<Props> = ({ route, navigation }) => {
             <Text style={styles.sectionTitle}>Contact</Text>
             <View style={styles.card}>
                 <View style={styles.infoRow}>
-                    <Mail size={moderateScale(24)} color={COLORS.lightText} style={styles.icon} />
+                    <Icon name="mail" size={moderateScale(24)} color={COLORS.lightText} style={styles.icon} />
                     <View style={styles.rowContent}>
                         <Text style={styles.label}>Email</Text>
                         <Text style={styles.value}>{user.email}</Text>
@@ -38,7 +40,7 @@ const UserDetailScreen: React.FC<Props> = ({ route, navigation }) => {
                 </View>
                 <View style={styles.divider} />
                 <View style={styles.infoRow}>
-                    <Phone size={moderateScale(24)} color={COLORS.lightText} style={styles.icon} />
+                    <Icon name="phone" size={moderateScale(24)} color={COLORS.lightText} style={styles.icon} />
                     <View style={styles.rowContent}>
                         <Text style={styles.label}>Phone</Text>
                         <Text style={styles.value}>{user.phone}</Text>
@@ -49,7 +51,7 @@ const UserDetailScreen: React.FC<Props> = ({ route, navigation }) => {
             <Text style={styles.sectionTitle}>Address</Text>
             <View style={styles.card}>
                 <View style={styles.infoRow}>
-                    <MapPin size={moderateScale(24)} color={COLORS.lightText} style={styles.icon} />
+                    <Icon name="map-pin" size={moderateScale(24)} color={COLORS.lightText} style={styles.icon} />
                     <View style={styles.rowContent}>
                         <Text style={styles.label}>Location</Text>
                         <Text style={styles.value}>{user.address.street}, {user.address.suite}</Text>
@@ -78,6 +80,8 @@ const styles = StyleSheet.create({
     backBtn: {
         paddingVertical: SIZES.base,
         paddingRight: SIZES.padding,
+        flexDirection: "row",
+        alignItems: "center",
     },
     backBtnText: {
         fontSize: SIZES.medium,
@@ -135,9 +139,9 @@ const styles = StyleSheet.create({
     infoRow: {
         flexDirection: "row",
         alignItems: "flex-start",
+        gap: 10,
     },
     icon: {
-        marginRight: SIZES.margin,
         marginTop: Platform.OS === 'ios' ? moderateScale(4) : moderateScale(2),
     },
     rowContent: {
