@@ -12,20 +12,22 @@ import {
 } from "react-native";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Search, UserPlus, Users } from "lucide-react-native";
+import Icon from "react-native-vector-icons/Feather";
 import { useAppDispatch, useAppSelector } from "../store";
 import { getUsers, resetUsers } from "../store/userSlice";
 import { User } from "../types/user.types";
 import UserItem from "../components/UserItem";
 import { RootStackParamList } from "../navigation/AppNavigator";
 import { COLORS, SIZES, moderateScale } from "../constants/theme";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
     navigation: NativeStackNavigationProp<RootStackParamList, "Home">;
 };
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
-    const dispatch = useAppDispatch();
+    const insets = useSafeAreaInsets()
+    const dispatch = useAppDispatch()
     const { users, loading, page, error, hasMore } = useAppSelector((state) => state.users);
 
     const [search, setSearch] = useState("");
@@ -53,21 +55,17 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     );
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { paddingTop: insets.top }]}>
             <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
-            
+
             <View style={styles.header}>
                 <View>
-                    <Text style={styles.headerTitle}>Contacts</Text>
-                    <Text style={styles.headerSubtitle}>{users.length} people found</Text>
+                    <Text style={styles.headerTitle}>Users List</Text>
                 </View>
-                <TouchableOpacity style={styles.headerIcon}>
-                    <UserPlus size={moderateScale(24)} color={COLORS.primary} />
-                </TouchableOpacity>
             </View>
 
             <View style={styles.searchContainer}>
-                <Search size={moderateScale(20)} color={COLORS.lightText} style={styles.searchIcon} />
+                <Icon name="search" size={moderateScale(20)} color={COLORS.lightText} style={styles.searchIcon} />
                 <TextInput
                     placeholder="Search users by name..."
                     value={search}
@@ -117,7 +115,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
                     ListEmptyComponent={
                         !loading ? (
                             <View style={styles.emptyContainer}>
-                                <Users size={moderateScale(48)} color={COLORS.lightText} />
+                                <Icon name="users" size={moderateScale(48)} color={COLORS.lightText} />
                                 <Text style={styles.centerText}>No users found matching "{search}"</Text>
                             </View>
                         ) : null
@@ -147,21 +145,6 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(28),
         fontWeight: "800",
         color: COLORS.text,
-    },
-    headerSubtitle: {
-        fontSize: SIZES.font,
-        color: COLORS.lightText,
-        marginTop: -moderateScale(2),
-    },
-    headerIcon: {
-        width: moderateScale(45),
-        height: moderateScale(45),
-        borderRadius: moderateScale(22.5),
-        backgroundColor: COLORS.white,
-        justifyContent: "center",
-        alignItems: "center",
-        borderWidth: 1,
-        borderColor: COLORS.border,
     },
     searchContainer: {
         flexDirection: "row",
@@ -224,7 +207,7 @@ const styles = StyleSheet.create({
         borderRadius: SIZES.radius,
     },
     TryAgainText: {
-        color: COLORS.white,
+        color: COLORS.error,
         fontSize: SIZES.font,
         fontWeight: "bold",
     }
